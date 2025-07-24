@@ -423,62 +423,20 @@
     }
 
     function renderCategoryButtons() {
-  const container = document.getElementById('categoryButtons');
-  container.innerHTML = '';
-  categories.forEach((cat, index) => {
-    const btnWrapper = document.createElement('div');
-    btnWrapper.style.display = 'flex';
-    btnWrapper.style.alignItems = 'center';
-
-    const btn = document.createElement('button');
-    btn.textContent = cat;
-    btn.className = cat === currentCategory ? 'active' : '';
-    btn.onclick = () => {
-      currentCategory = cat;
-      renderCategoryButtons();
-      renderTable();
-    };
-
-    const delBtn = document.createElement('span');
-    delBtn.textContent = '✖';
-    delBtn.title = 'Delete category';
-    delBtn.style.marginLeft = '5px';
-    delBtn.style.cursor = 'pointer';
-    delBtn.style.color = '#ff4d4f';
-    delBtn.style.fontSize = '1.1rem';
-    delBtn.onclick = (e) => {
-      e.stopPropagation(); // Prevent parent button click
-      deleteCategory(index);
-    };
-
-    btnWrapper.appendChild(btn);
-    btnWrapper.appendChild(delBtn);
-    container.appendChild(btnWrapper);
-  });
-}
-
-function deleteCategory(index) {
-  const catToDelete = categories[index];
-
-  const hasProducts = products.some(p => p.category === catToDelete);
-  if (hasProducts) {
-    if (!confirm(`"${catToDelete}" has products. Deleting it will also remove its products. Proceed?`)) {
-      return;
+      const container = document.getElementById('categoryButtons');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.className = cat === currentCategory ? 'active' : '';
+        btn.onclick = () => {
+          currentCategory = cat;
+          renderCategoryButtons();
+          renderTable();
+        };
+        container.appendChild(btn);
+      });
     }
-    products = products.filter(p => p.category !== catToDelete);
-  }
-
-  categories.splice(index, 1);
-
-  // Update current category
-  if (currentCategory === catToDelete) {
-    currentCategory = categories[0] || '';
-  }
-
-  saveToStorage();
-  renderCategoryButtons();
-  renderTable();
-}
 
     function addCategory() {
       const input = document.getElementById('newCategoryInput');
