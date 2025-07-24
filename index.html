@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Wholesale By Adheeb</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin: 30px 0 10px;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 600px;
+      width: 90%;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 20px;
+      padding: 30px 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .category-buttons button {
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      background: #e1e4e8;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.3s;
+      user-select: none;
+    }
+
+    .category-buttons button.active {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(0, 198, 255, 0.6);
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: #222;
+    }
+
+    input,
+    button.add-btn,
+    button.add-category-btn {
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    input {
+      background: #f0f2f5;
+      padding: 14px;
+      width: 100%;
+      margin-top: 12px;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    input:focus {
+      background: #e6f0ff;
+      outline: none;
+      box-shadow: 0 0 6px #0072ff;
+    }
+
+    button.add-btn {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      cursor: pointer;
+      margin-top: 20px;
+      padding: 14px;
+      width: 100%;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(0, 198, 255, 0.7);
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    button.add-btn:hover,
+    button.add-btn:focus-visible {
+      transform: scale(1.03);
+      outline: none;
+      box-shadow: 0 6px 20px rgba(0, 198, 255, 0.9);
+    }
+
+    /* Category add wrapper */
+    .category-add-wrapper {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      justify-content: center;
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .category-add-wrapper input {
+      flex: 1 1 auto;
+      max-width: none;
+      margin-top: 0;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border-radius: 8px;
+      background: #f0f2f5;
+      color: #333;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+    }
+
+    .category-add-wrapper input:focus {
+      background: #e6f0ff;
+      outline: none;
+      box-shadow: 0 0 6px #0072ff;
+    }
+
+    button.add-category-btn {
+      background: linear-gradient(to right, #0072ff, #00c6ff);
+      color: #fff;
+      padding: 8px 15px;
+      font-size: 1.4rem;
+      border-radius: 8px;
+      margin-top: 0;
+      width: 48px;
+      cursor: pointer;
+      font-weight: 700;
+      border: none;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      transition: background 0.3s, transform 0.2s ease;
+    }
+
+    button.add-category-btn:hover,
+    button.add-category-btn:focus-visible {
+      background: linear-gradient(to right, #005fcc, #0099dd);
+      transform: scale(1.1);
+      outline: none;
+      box-shadow: 0 0 8px #0099dd;
+    }
+
+    .search-wrapper {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-wrapper input {
+      padding: 12px;
+      width: 100%;
+      border-radius: 10px;
+      background: #f0f2f5;
+      color: #333;
+      border: none;
+      font-size: 0.95rem;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+      transition: background 0.3s ease;
+    }
+
+    .search-wrapper input::placeholder {
+      color: #999;
+    }
+
+    .search-wrapper input:focus {
+      background: #e6f0ff;
+      outline: none;
+      box-shadow: 0 0 6px #0072ff;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 8px 6px;
+      table-layout: fixed;
+      min-width: 500px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    th,
+    td {
+      padding: 10px 12px;
+      background-color: #f0f2f5;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+      vertical-align: middle;
+      min-width: 90px;
+      user-select: none;
+    }
+
+    td:last-child {
+      padding: 0 12px;
+    }
+
+    th {
+      background-color: #dce4ef;
+      font-weight: 700;
+      font-size: 1rem;
+      color: #555;
+    }
+
+    .action-btns-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      max-width: 140px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+.action-btn {
+  width: 38px;
+  height: 38px;       /* smaller height */
+  font-size: 1rem;    /* slightly smaller font */
+  font-weight: 700;
+  color: #fff;
+  border-radius: 8px; /* a bit less rounding */
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* lighter shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0;
+  line-height: 1;
+  touch-action: manipulation;
+}
+
+.sell-btn {
+  background: #7aaefc;  /* lighter blue */
+  box-shadow: 0 3px 8px rgba(122, 174, 252, 0.3);
+}
+
+.edit-btn {
+  background: #f4d35e;  /* lighter yellow */
+  color: #222;
+  box-shadow: 0 3px 8px rgba(244, 211, 94, 0.3);
+}
+
+.delete-btn {
+  background: #f28b82;  /* lighter red */
+  box-shadow: 0 3px 8px rgba(242, 139, 130, 0.3);
+}
+
+.action-btn:hover,
+.action-btn:focus-visible {
+  transform: scale(1.1);
+  box-shadow: 0 5px 14px rgba(0, 0, 0, 0.15);
+  outline-color: transparent;
+  outline-style: none;
+}
+
+    #stockSummary {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 10px;
+      color: #666;
+      user-select: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 16px;
+      color: #aaa;
+      font-size: 0.85rem;
+      margin-top: auto;
+      user-select: none;
+    }
+
+    @media screen and (max-width: 480px) {
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .container {
+        padding: 20px 15px;
+      }
+
+      input,
+      button.add-btn,
+      button.add-category-btn {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+
+      button.add-category-btn {
+        width: 42px;
+        font-size: 1.2rem;
+        padding: 8px 10px;
+      }
+
+      th,
+      td {
+        font-size: 0.85rem;
+        padding: 8px 6px;
+        border-radius: 4px;
+      }
+
+      .category-buttons button {
+        flex: 1 1 100%;
+      }
+
+      .category-add-wrapper {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .category-add-wrapper input,
+      .category-add-wrapper button {
+        max-width: 100%;
+        width: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h2>Wholesale By Adheeb</h2>
+
+  <div class="container">
+    <div class="category-buttons" id="categoryButtons"></div>
+
+    <div class="category-add-wrapper">
+      <input
+        type="text"
+        id="newCategoryInput"
+        placeholder="Add new category"
+        autocomplete="off"
+      />
+      <button class="add-category-btn" onclick="addCategory()">+</button>
+    </div>
+
+    <h3>🛒 Add Product</h3>
+    <input type="text" id="productName" placeholder="Product Name" />
+    <input type="number" id="productCost" placeholder="Cost (LKR)" />
+    <input type="number" id="productQty" placeholder="Quantity" />
+    <button class="add-btn" onclick="addProduct()">Add Product</button>
+
+    <h3 style="margin-top: 30px;">📦 Product Inventory</h3>
+    <div class="search-wrapper">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="Search products..."
+        oninput="renderTable()"
+      />
+    </div>
+
+    <div class="table-wrapper">
+      <table id="productTable" aria-label="Product Inventory Table">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Cost</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div id="stockSummary" aria-live="polite"></div>
+  </div>
+
+  <footer>Powered by SHELBY</footer>
+
+  <script>
+    let categories = JSON.parse(localStorage.getItem('categories')) || ['Imported Chocolates', 'Candy Items'];
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+    let currentCategory = categories[0];
+
+    function saveToStorage() {
+      localStorage.setItem('products', JSON.stringify(products));
+      localStorage.setItem('categories', JSON.stringify(categories));
+    }
+
+    function renderCategoryButtons() {
+      const container = document.getElementById('categoryButtons');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.className = cat === currentCategory ? 'active' : '';
+        btn.onclick = () => {
+          currentCategory = cat;
+          renderCategoryButtons();
+          renderTable();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function addCategory() {
+      const input = document.getElementById('newCategoryInput');
+      const newCat = input.value.trim();
+      if (!newCat) {
+        alert('Please enter a category name');
+        return;
+      }
+      if (categories.includes(newCat)) {
+        alert('Category already exists');
+        return;
+      }
+      categories.push(newCat);
+      input.value = '';
+      currentCategory = newCat;
+      saveToStorage();
+      renderCategoryButtons();
+      renderTable();
+    }
+
+    function addProduct() {
+      const name = document.getElementById('productName').value.trim();
+      const cost = parseFloat(document.getElementById('productCost').value);
+      const qty = parseInt(document.getElementById('productQty').value);
+
+      if (!name || isNaN(cost) || isNaN(qty) || qty <= 0) {
+        alert('Please fill in all fields correctly!');
+        return;
+      }
+
+      products.push({ name, cost, qty, category: currentCategory });
+      clearInputs();
+      saveToStorage();
+      renderTable();
+    }
+
+    function sellProduct(index) {
+      products[index].qty--;
+      if (products[index].qty <= 0) {
+        products.splice(index, 1);
+      }
+      saveToStorage();
+      renderTable();
+    }
+
+    function deleteProduct(index) {
+      if (confirm('Delete this product?')) {
+        products.splice(index, 1);
+        saveToStorage();
+        renderTable();
+      }
+    }
+
+    function editProduct(index) {
+      const p = products[index];
+      const option = prompt('Which do you want to edit?\n1. Name\n2. Cost\n3. Quantity');
+
+      if (option === '1') {
+        const newName = prompt('New name:', p.name);
+        if (newName) products[index].name = newName.trim();
+      } else if (option === '2') {
+        const newCost = prompt('New cost (LKR):', p.cost);
+        if (!isNaN(newCost)) products[index].cost = parseFloat(newCost);
+      } else if (option === '3') {
+        const newQty = prompt('New quantity:', p.qty);
+        if (!isNaN(newQty)) products[index].qty = parseInt(newQty);
+      } else {
+        alert('Invalid choice!');
+      }
+
+      saveToStorage();
+      renderTable();
+    }
+
+    function clearInputs() {
+      document.getElementById('productName').value = '';
+      document.getElementById('productCost').value = '';
+      document.getElementById('productQty').value = '';
+    }
+
+    function renderTable() {
+      const tbody = document.querySelector('#productTable tbody');
+      tbody.innerHTML = '';
+      const searchKeyword = document.getElementById('searchInput')?.value.toLowerCase() || '';
+
+      let totalQty = 0;
+      let totalValue = 0;
+      let totalItems = 0;
+
+      products.forEach((p, i) => {
+        if (p.category === currentCategory && p.name.toLowerCase().includes(searchKeyword)) {
+          totalItems++;
+          totalQty += p.qty;
+          totalValue += p.qty * p.cost;
+
+          tbody.innerHTML += `
+            <tr>
+              <td>${p.name}</td>
+              <td>Rs. ${p.cost.toFixed(2)}</td>
+              <td style="color: ${p.qty < 5 ? 'red' : '#333'}; font-weight: ${p.qty < 5 ? 'bold' : 'normal'};">${p.qty}</td>
+              <td>
+                <div class="action-btns-wrapper">
+                  <button class="action-btn sell-btn" aria-label="Sell product ${p.name}" onclick="sellProduct(${i})">S</button>
+                  <button class="action-btn edit-btn" aria-label="Edit product ${p.name}" onclick="editProduct(${i})">E</button>
+                  <button class="action-btn delete-btn" aria-label="Delete product ${p.name}" onclick="deleteProduct(${i})">D</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }
+      });
+
+      document.getElementById('stockSummary').innerHTML =
+        totalItems
+          ? `📊 <b>${totalItems}</b> Items, 🔢 <b>${totalQty}</b> Total Qty, 💰 <b>Rs. ${totalValue.toFixed(2)}</b> Value`
+          : `No matching products in "${currentCategory}"`;
+    }
+
+    renderCategoryButtons();
+    renderTable();
+  </script>
+</body>
+</html>
